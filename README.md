@@ -1,4 +1,8 @@
-# TS FORGE
+<h1 align="center">
+   <img src="./resources/img/knife-sheath.png" alt="TS Forge Icon" width="128" height="128" description="A Knife Sheath that represents how this pkg is a 'tool' for handling API responses and generating TS types"> 
+   <div align="center">TS Forge</div>
+</h1>
+
 
 [![npm version](https://badge.fury.io/js/ts-forge.svg)](https://badge.fury.io/js/ts-forge)
 [![GitHub repo](https://img.shields.io/badge/GitHub-ts--forge-blue)](https://github.com/Yrrrrrf/ts-forge)
@@ -8,6 +12,13 @@
 ## Overview
 
 TS FORGE is a TypeScript library designed to handle API response types efficiently. It provides a robust type system for managing API responses, reducing boilerplate code, and ensuring type safety throughout your application.
+
+This pkg is built with TypeScript in mind, offering full TypeScript support, runtime type validation, and error handling. It is lightweight, dependency-free.
+
+
+## Considerations
+
+**The current 'API route' convention is followed by the one declared by the [CRUD-Forge](https://pypi.org/project/crud-forge/) python library (to manage API routes for [FastAPI](https://fastapi.tiangolo.com/) projects).**
 
 ## Key Features
 

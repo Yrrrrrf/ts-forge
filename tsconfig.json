@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "types": ["bun-types"],
+    "allowJs": true,
+    "strict": true,
+    "declaration": true,           // This is crucial for .d.ts generation
+    "declarationMap": true,        // Adds sourcemaps for declarations (for debugging & IDE support)
+    "outDir": "./dist",           // Output dir
+    "rootDir": "./src",           // Source dir
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}

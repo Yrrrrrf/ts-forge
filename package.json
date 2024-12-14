@@ -1,0 +1,43 @@
+{
+  "name": "ts-forge",
+  "version": "0.0.1",
+  "description": "Type API response handler",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Yrrrrrf/ts-forge.git"
+  },
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "test": "bun test",
+    "build": "tsc --project tsconfig.json",
+    "dev": "tsc --project tsconfig.json --watch",
+    "lint": "eslint src/**/*.ts",
+    "format": "prettier --write \"src/**/*.ts\""
+  },
+  "files": [
+    "dist/**/*"
+  ],
+  "keywords": [
+    "api",
+    "response",
+    "handler"
+  ],
+  "author": "Yrrrrrf <fer.rezac@outlook.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "latest",
+    "@typescript-eslint/parser": "latest",
+    "eslint": "latest",
+    "prettier": "latest",
+    "bun-types": "latest",
+    "typescript": "latest"
+  }
+}
