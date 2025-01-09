@@ -145,7 +145,7 @@ export class SchemaMetadataFetcher {
     const properties = table.columns.map(column => {
       const tsType = mapPgTypeToTs(column.type);
       const nullable = column.nullable ? '?' : '';
-      return `  ${column.name}${nullable}: ${tsType};`;
+      return `    ${column.name}${nullable}: ${tsType};`;
     });
 
     return `interface ${table.name} {\n${properties.join('\n')}\n}`;
@@ -163,30 +163,6 @@ export class SchemaMetadataFetcher {
 
     return `interface ${view.name} {\n${properties.join('\n')}\n}`;
   }
-
-//   /**
-//    * Generates TypeScript types for a function
-//    */
-//   private generateFunctionTypes(func: ApiFunctionMetadata): { params: string; returnType: string } {
-//     // Generate parameter interface
-//     const paramProperties = func.parameters
-//       .filter(param => param.mode !== 'OUT')
-//       .map(param => {
-//         const tsType = mapPgTypeToTs(param.type);
-//         const optional = param.default_value !== undefined ? '?' : '';
-//         return `  ${param.name}${optional}: ${tsType};`;
-//       });
-
-//     const params = `interface ${func.name}Params {\n${paramProperties.join('\n')}\n}`;
-
-//     // Generate return type
-//     let returnType = mapPgTypeToTs(func.return_type);
-//     if (func.is_aggregate) {
-//       returnType = `Array<${returnType}>`;
-//     }
-
-//     return { params, returnType };
-//   }
 
   /**
    * Writes type definitions to a file
