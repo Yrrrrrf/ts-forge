@@ -1,8 +1,8 @@
 import { expect, test, describe } from "bun:test";
-import { forge_init } from "..";
+import { init_forge } from "..";
 
 describe("hello", () => {
   test("returns greeting with name", () => {
-    expect(forge_init()).toBe("This fn is called from forge_init");
+    expect(init_forge()).toBe("This fn is called from forge_init");
   });
 });

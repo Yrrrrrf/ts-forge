@@ -16,9 +16,9 @@
     }
   },
   "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
     "test": "bun test",
-    "build": "tsc --project tsconfig.json",
-    "dev": "tsc --project tsconfig.json --watch",
     "lint": "eslint src/**/*.ts",
     "format": "prettier --write \"src/**/*.ts\""
   },
@@ -37,7 +37,11 @@
     "@typescript-eslint/parser": "latest",
     "eslint": "latest",
     "prettier": "latest",
+    "rimraf": "latest",
     "bun-types": "latest",
     "typescript": "latest"
+  },
+  "dependencies": {
+    "@types/bun": "^1.1.16"
   }
 }

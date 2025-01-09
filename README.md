@@ -4,9 +4,8 @@
 </h1>
 
 
-[![npm version](https://badge.fury.io/js/ts-forge.svg)](https://badge.fury.io/js/ts-forge)
+[![npm pkg](https://badge.fury.io/js/ts-forge.svg)](https://badge.fury.io/js/ts-forge)
 [![GitHub repo](https://img.shields.io/badge/GitHub-ts--forge-blue)](https://github.com/Yrrrrrf/ts-forge)
-[![npmjs](https://img.shields.io/npm/types/ts-forge)](https://www.npmjs.com/package/ts-forge)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://choosealicense.com/licenses/mit/)
 
 ## Overview
