@@ -127,12 +127,12 @@ export class SchemaMetadataFetcher {
         types.views[`${schemaName}.${viewName}`] = this.generateViewInterface(view);
       });
 
-      // Generate function types
-      Object.entries(schema.functions).forEach(([funcName, func]) => {
-        const { params, returnType } = this.generateFunctionTypes(func);
-        types.functions[`${schemaName}.${funcName}`] = returnType;
-        types.params[`${schemaName}.${funcName}.params`] = params;
-      });
+    //   // Generate function types
+    //   Object.entries(schema.functions).forEach(([funcName, func]) => {
+    //     const { params, returnType } = this.generateFunctionTypes(func);
+    //     types.functions[`${schemaName}.${funcName}`] = returnType;
+    //     types.params[`${schemaName}.${funcName}.params`] = params;
+    //   });
     });
 
     return types;
@@ -164,29 +164,29 @@ export class SchemaMetadataFetcher {
     return `interface ${view.name} {\n${properties.join('\n')}\n}`;
   }
 
-  /**
-   * Generates TypeScript types for a function
-   */
-  private generateFunctionTypes(func: ApiFunctionMetadata): { params: string; returnType: string } {
-    // Generate parameter interface
-    const paramProperties = func.parameters
-      .filter(param => param.mode !== 'OUT')
-      .map(param => {
-        const tsType = mapPgTypeToTs(param.type);
-        const optional = param.default_value !== undefined ? '?' : '';
-        return `  ${param.name}${optional}: ${tsType};`;
-      });
+//   /**
+//    * Generates TypeScript types for a function
+//    */
+//   private generateFunctionTypes(func: ApiFunctionMetadata): { params: string; returnType: string } {
+//     // Generate parameter interface
+//     const paramProperties = func.parameters
+//       .filter(param => param.mode !== 'OUT')
+//       .map(param => {
+//         const tsType = mapPgTypeToTs(param.type);
+//         const optional = param.default_value !== undefined ? '?' : '';
+//         return `  ${param.name}${optional}: ${tsType};`;
+//       });
 
-    const params = `interface ${func.name}Params {\n${paramProperties.join('\n')}\n}`;
+//     const params = `interface ${func.name}Params {\n${paramProperties.join('\n')}\n}`;
 
-    // Generate return type
-    let returnType = mapPgTypeToTs(func.return_type);
-    if (func.is_aggregate) {
-      returnType = `Array<${returnType}>`;
-    }
+//     // Generate return type
+//     let returnType = mapPgTypeToTs(func.return_type);
+//     if (func.is_aggregate) {
+//       returnType = `Array<${returnType}>`;
+//     }
 
-    return { params, returnType };
-  }
+//     return { params, returnType };
+//   }
 
   /**
    * Writes type definitions to a file

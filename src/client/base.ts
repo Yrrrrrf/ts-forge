@@ -3,7 +3,7 @@
 /**
  * Configuration options for TsForge client
  */
-export interface TsForgeConfig {
+export interface ForgeConfig {
     baseUrl: string;
     schemas?: string[];
     defaultHeaders?: Record<string, string>;
@@ -41,9 +41,10 @@ export interface TsForgeConfig {
    * Base client class for handling HTTP requests
    */
   export class BaseClient {
-    private readonly config: TsForgeConfig;
+    // private readonly config: ForgeConfig;
+    config: ForgeConfig;
   
-    constructor(config: TsForgeConfig) {
+    constructor(config: ForgeConfig) {
       this.config = {
         timeout: 30000, // Default 30s timeout
         ...config,
@@ -188,8 +189,5 @@ export interface TsForgeConfig {
       return this.request<T>(endpoint, { ...options, method: 'DELETE' });
     }
   }
-  
-  // Export default instance creator
-  export function createBaseClient(config: TsForgeConfig): BaseClient {
-    return new BaseClient(config);
-  }
+
+export const baseClient = new BaseClient({ baseUrl: 'http://localhost:8000' });

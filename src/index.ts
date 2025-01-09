@@ -1,23 +1,10 @@
 import { log, cyan, green, yellow } from './tools/logging';
 
-/**
- * Configuration for the API client
- */
-export interface ForgeConfig {
-  baseUrl?: string;
-}
 
-/**
- * Main class for handling API requests
- */
-export class TsForge {
-  private baseUrl: string;
+// * Re-export the TsForge class and genTypes function...
+import { TsForge, baseClient } from './forge';
+export { TsForge , baseClient};
 
-  constructor(config?: ForgeConfig) {
-    this.baseUrl = config?.baseUrl || 'http://localhost:8000';
-    log.success(`Initialized TsForge with baseUrl: ${cyan(this.baseUrl)}`);
-  }
-}
 
 /**
  * Initialize the forge
