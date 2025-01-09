@@ -1,10 +1,15 @@
 import fs from 'fs/promises';
 import { cyan, log } from './tools/logging';
 
-import { createSchemaMetadataFetcher } from './schema/metadata';
 import { BaseClient, baseClient, ForgeConfig } from './client/base';
-
 export { BaseClient, baseClient, ForgeConfig } from './client/base';
+
+import { ApiColumnMetadata, type ApiSchemaMetadata, ApiTableMetadata } from './schema/gen-types';
+
+import { 
+  fetchSchemaMetadata, 
+  generateInterface
+} from './schema/gen-types';
 
 /**
  * Main class for handling API requests
@@ -26,14 +31,14 @@ export class TsForge {
 
   // get the types uisng the schema metadata
   async genTypes(schemas: string[]): Promise<void> {
-    const fetcher = createSchemaMetadataFetcher(this.baseClient);
-    const metadata = await fetcher.fetchMetadata(schemas);
-    const types = fetcher.generateTypeDefinitions(metadata);
+    let schemaMetadata: ApiSchemaMetadata[] = await fetchSchemaMetadata();
+    let tables: ApiTableMetadata[] = schemaMetadata.flatMap(schema => Object.values(schema.tables));
+    let types = tables.map(generateInterface).join('\n\n');
     console.log(types);
-    
-    // await fs.writeFile('src/generated/types.ts', JSON.stringify(types, null, 2));
+
+    await fs.mkdir('src/generated', { recursive: true });
+    await fs.writeFile('src/generated/types.ts', types);
     log.success('Generated types');
   }
 
 }
-  

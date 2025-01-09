@@ -2,8 +2,27 @@ import { log, cyan, green, yellow } from './tools/logging';
 
 
 // * Re-export the TsForge class and genTypes function...
-import { TsForge, baseClient } from './forge';
-export { TsForge , baseClient};
+
+import {
+  ApiColumnMetadata,
+  ApiTableMetadata,
+  ApiSchemaMetadata,
+} from './schema/gen-types';
+export {
+  ApiColumnMetadata,
+  ApiTableMetadata,
+  ApiSchemaMetadata,
+};
+
+// * Re-export the TsForge class and genTypes function...
+import { 
+  TsForge, 
+  baseClient,
+} from './forge';
+export { 
+  TsForge , 
+  baseClient,
+};
 
 
 /**
