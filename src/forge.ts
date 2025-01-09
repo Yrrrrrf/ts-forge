@@ -1,24 +1,24 @@
+// src/forge.ts
 import fs from 'fs/promises';
-import { cyan, log } from './tools/logging';
-
+import { cyan, dim, log } from './tools/logging';
 import { BaseClient, baseClient, ForgeConfig } from './client/base';
-export { BaseClient, baseClient, ForgeConfig } from './client/base';
-
-import { ApiColumnMetadata, type ApiSchemaMetadata, ApiTableMetadata } from './schema/gen-types';
-
 import { 
-  fetchSchemaMetadata, 
-  generateInterface
+  ApiSchemaMetadata,
+  fetchSchemaMetadata,
+  generateInterface,
+  generateIndexContent
 } from './schema/gen-types';
 
+export { BaseClient, baseClient, ForgeConfig } from './client/base';
+
 /**
- * Main class for handling API requests
+ * Main class for handling API requests and type generation
  */
 export class TsForge {
   baseClient: BaseClient;
 
   constructor(baseClient: BaseClient) {
-    this.baseClient = baseClient
+    this.baseClient = baseClient;
     log.success(`Initialized TsForge with baseUrl: ${cyan(this.baseClient.config.baseUrl)}`);
   }
 
@@ -29,16 +29,42 @@ export class TsForge {
     return new TsForge(baseClient);
   }
 
-  // get the types uisng the schema metadata
-  async genTypes(schemas: string[]): Promise<void> {
-    let schemaMetadata: ApiSchemaMetadata[] = await fetchSchemaMetadata();
-    let tables: ApiTableMetadata[] = schemaMetadata.flatMap(schema => Object.values(schema.tables));
-    let types = tables.map(generateInterface).join('\n\n');
-    console.log(types);
+  /**
+   * Generate types for a single schema
+   */
+  private async genSchemaTypes(schema: string, schemaMetadata: ApiSchemaMetadata[]): Promise<void> {
+    const schemaData = schemaMetadata.find(s => s.name === schema);
+    if (!schemaData) {
+      log.warn(`Schema ${schema} not found in metadata`);
+      return;
+    }
 
-    await fs.mkdir('src/generated', { recursive: true });
-    await fs.writeFile('src/generated/types.ts', types);
-    log.success('Generated types');
+    const tables = Object.values(schemaData.tables);
+    const types = tables.map(generateInterface).join('\n\n');
+
+    await fs.mkdir('src/gen', { recursive: true });
+    await fs.writeFile(`src/gen/types-${schema}.ts`, types);
+    
+    log.info(dim('\tGenerated types for schema: ') + cyan(schema) + dim(`[${tables.length} tables]`));
   }
 
+  /**
+   * Generate types for multiple schemas and create index file
+   */
+  async genTTypes(schemas: string[]): Promise<void> {
+      // Fetch metadata for all schemas
+      const schemaMetadata = await fetchSchemaMetadata();
+      
+      // Generate individual schema files
+      await Promise.all(
+        schemas.map(schema => this.genSchemaTypes(schema, schemaMetadata))
+      );
+
+      // Generate index.ts file
+      const indexContent = generateIndexContent(schemas);
+      await fs.writeFile('src/gen/index.ts', indexContent);
+
+      console.log('\tGen types for schemas:' + '\n\t' + cyan(schemas.join('\n\t')));
+      log.info(dim('Types are available in ') + cyan('src/gen/'));
+  }
 }
