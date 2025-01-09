@@ -16,6 +16,7 @@
     }
   },
   "scripts": {
+    "watch": "tsc --watch",
     "build": "tsc",
     "dev": "tsc --watch",
     "test": "bun test",
