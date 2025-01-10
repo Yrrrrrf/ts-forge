@@ -8,8 +8,6 @@ import {
   TableMetadata
 } from './client/types';
 
-export { BaseClient } from './client/base';
-
 /**
  * Schema lookup type for easy access to tables
  */
