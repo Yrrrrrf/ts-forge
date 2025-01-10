@@ -1,37 +1,17 @@
 import { log, cyan, green, yellow } from './tools/logging';
 
 
-// * Re-export the TsForge class and genTypes function...
+import * as base from './client/base';
+export { base };
 
-import {
-  ApiColumnMetadata,
-  ApiTableMetadata,
-  ApiSchemaMetadata,
-} from './schema/gen-types';
-export {
-  ApiColumnMetadata,
-  ApiTableMetadata,
-  ApiSchemaMetadata,
-};
+import * as t_types from './client/types';
+export { t_types };
 
-// * Re-export the TsForge class and genTypes function...
-import { 
-  TsForge, 
-  baseClient,
-} from './forge';
-export { 
-  TsForge , 
-  baseClient,
-};
+import * as forge from './forge';
+export { forge };
 
-
-/**
- * Initialize the forge
- */
-export function forgeInit(): string {
-  log.info("TS Forge initialized");
-  return "TS Forge initialized";
-}
+import * as crud from './client/crud';
+export { crud };
 
 /**
  * Display application data

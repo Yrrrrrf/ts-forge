@@ -1,18 +1,5 @@
 // src/client/base.ts
 
-/**
- * Configuration options for TsForge client
- */
-export interface ForgeConfig {
-    baseUrl: string;
-    schemas?: string[];
-    defaultHeaders?: Record<string, string>;
-    timeout?: number;
-    retryConfig?: {
-      maxRetries: number;
-      backoff: number;
-    };
-  }
   
   /**
    * Custom error class for TsForge operations
@@ -37,29 +24,29 @@ export interface ForgeConfig {
     timeout?: number;
   }
   
+
   /**
    * Base client class for handling HTTP requests
    */
   export class BaseClient {
-    // private readonly config: ForgeConfig;
-    config: ForgeConfig;
+    baseUrl: string
+    schemas?: string[];
+    defaultHeaders?: Record<string, string>;
+    timeout?: number;
+    retryConfig?: {
+      maxRetries: number;
+      backoff: number;
+    };
   
-    constructor(config: ForgeConfig) {
-      this.config = {
-        timeout: 30000, // Default 30s timeout
-        ...config,
-        defaultHeaders: {
-          'Content-Type': 'application/json',
-          ...config.defaultHeaders,
-        },
-      };
+    constructor(baseUrl: string, options?: Partial<BaseClient>) {
+      this.baseUrl = baseUrl;
     }
-  
+
     /**
      * Builds the full URL including query parameters
      */
     private buildUrl(endpoint: string, params?: Record<string, string | number | boolean>): string {
-      const url = new URL(endpoint, this.config.baseUrl);
+      const url = new URL(endpoint, this.baseUrl);
       
       if (params) {
         Object.entries(params).forEach(([key, value]) => {
@@ -101,10 +88,10 @@ export interface ForgeConfig {
       endpoint: string,
       options: BaseRequestOptions = {}
     ): Promise<T> {
-      const { params, timeout = this.config.timeout, ...fetchOptions } = options;
+      const { params, timeout = this.timeout, ...fetchOptions } = options;
       const url = this.buildUrl(endpoint, params);
       let attempts = 0;
-      const maxRetries = this.config.retryConfig?.maxRetries ?? 3;
+      const maxRetries = this.retryConfig?.maxRetries ?? 3;
   
       while (attempts < maxRetries) {
         try {
@@ -113,7 +100,7 @@ export interface ForgeConfig {
             {
               ...fetchOptions,
               headers: {
-                ...this.config.defaultHeaders,
+                ...this.defaultHeaders,
                 ...fetchOptions.headers,
               },
             },
@@ -144,7 +131,7 @@ export interface ForgeConfig {
           }
   
           // Wait before retrying using exponential backoff
-          const backoff = (this.config.retryConfig?.backoff ?? 1000) * Math.pow(2, attempts - 1);
+          const backoff = (this.retryConfig?.backoff ?? 1000) * Math.pow(2, attempts - 1);
           await new Promise(resolve => setTimeout(resolve, backoff));
         }
       }
@@ -189,5 +176,3 @@ export interface ForgeConfig {
       return this.request<T>(endpoint, { ...options, method: 'DELETE' });
     }
   }
-
-export const baseClient = new BaseClient({ baseUrl: 'http://localhost:8000' });

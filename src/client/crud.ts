@@ -1,5 +1,6 @@
 // src/client/crud.ts
 import { BaseClient, BaseRequestOptions, TsForgeError } from './base';
+import { TableMetadata } from './types';
 
 /**
  * Interface for filtering operations
@@ -11,21 +12,13 @@ export interface FilterOptions {
   offset?: number;
 }
 
-/**
- * Parameters for generating CRUD operations
- */
-export interface CrudConfig {
-  schema: string;
-  table: string;
-  primaryKey?: string;
-}
 
 /**
  * Standard CRUD operations interface
  */
 export interface CrudOperations<T> {
-  findAll(filter?: FilterOptions): Promise<T[]>;
   findOne(id: string | number): Promise<T>;
+  findAll(filter?: FilterOptions): Promise<T[]>;
   create(data: Partial<T>): Promise<T>;
   update(id: string | number, data: Partial<T>): Promise<T>;
   delete(id: string | number): Promise<void>;
@@ -38,10 +31,9 @@ export interface CrudOperations<T> {
  */
 export function createCrudOperations<T>(
   client: BaseClient,
-  config: CrudConfig
+  table: TableMetadata
 ): CrudOperations<T> {
-  const { schema, table, primaryKey = 'id' } = config;
-  const basePath = `/${schema}/${table}`;
+  const basePath = `/${table.schema}/${table}`;
 
   /**
    * Transforms filter options into query parameters
@@ -78,7 +70,7 @@ export function createCrudOperations<T>(
      * Retrieve a single record by ID
      */
     async findOne(id: string | number): Promise<T> {
-      const response = await client.get<T>(`${basePath}/${id}`);
+      const response = await client.get<T>(`${basePath}?id=${id}`);
       if (!response) {
         throw new TsForgeError(
           `No record found with id ${id}`,
@@ -100,14 +92,14 @@ export function createCrudOperations<T>(
      * Update an existing record
      */
     async update(id: string | number, data: Partial<T>): Promise<T> {
-      return client.put<T>(`${basePath}/${id}`, data);
+      return client.put<T>(`${basePath}?id=${id}`, data);
     },
 
     /**
      * Delete a record
      */
     async delete(id: string | number): Promise<void> {
-      await client.delete(`${basePath}/${id}`);
+      await client.delete(`${basePath}?id=${id}`);
     },
 
     /**
@@ -128,33 +120,4 @@ export function createCrudOperations<T>(
       return response.count;
     },
   };
-}
-
-/**
- * Interface for table metadata
- */
-export interface TableMetadata {
-  columns: {
-    name: string;
-    type: string;
-    nullable: boolean;
-    isPrimary: boolean;
-  }[];
-  primaryKey?: string;
-  schema: string;
-  name: string;
-}
-
-/**
- * Creates a type-safe CRUD client for a table
- */
-export function createTableClient<T>(
-  client: BaseClient,
-  metadata: TableMetadata
-): CrudOperations<T> {
-  return createCrudOperations<T>(client, {
-    schema: metadata.schema,
-    table: metadata.name,
-    primaryKey: metadata.primaryKey
-  });
 }
