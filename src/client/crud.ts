@@ -26,21 +26,23 @@ export interface CrudOperations<T> {
   count(filter?: FilterOptions): Promise<number>;
 }
 
-/**
- * Creates CRUD operations for a specific table
- */
 export function createCrudOperations<T>(
   client: BaseClient,
-  table: TableMetadata
+  tableMetadata: TableMetadata
 ): CrudOperations<T> {
-  const basePath = `/${table.schema}/${table}`;
+  // Ensure we have all required table information
+  if (!tableMetadata || !tableMetadata.name) {
+    throw new TsForgeError('Invalid table metadata', 'INVALID_TABLE_METADATA');
+  }
+
+  // Construct base path using schema and table name from metadata
+  const basePath = `/${tableMetadata.schema}/${tableMetadata.name}`;
 
   /**
    * Transforms filter options into query parameters
    */
   function transformFilterToParams(filter: FilterOptions = {}): Record<string, string> {
     const params: Record<string, string> = {};
-
     if (filter.where) {
       params['where'] = JSON.stringify(filter.where);
     }
@@ -53,71 +55,42 @@ export function createCrudOperations<T>(
     if (filter.offset) {
       params['offset'] = filter.offset.toString();
     }
-
     return params;
   }
 
   return {
-    /**
-     * Retrieve all records
-     */
     async findAll(filter?: FilterOptions): Promise<T[]> {
-      const params = transformFilterToParams(filter);
-      return client.get<T[]>(basePath, { params });
+      return client.get<T[]>(basePath, { params: transformFilterToParams(filter) });
     },
 
-    /**
-     * Retrieve a single record by ID
-     */
     async findOne(id: string | number): Promise<T> {
-      const response = await client.get<T>(`${basePath}?id=${id}`);
-      if (!response) {
-        throw new TsForgeError(
-          `No record found with id ${id}`,
-          'NOT_FOUND',
-          404
-        );
+      const results = await this.findAll({ where: { id: id.toString() } });
+      if (results.length === 0) {
+        throw new Error(`No record found with ID: ${id}`);
       }
-      return response;
+      return results[0];
     },
-
-    /**
-     * Create a new record
-     */
+    
     async create(data: Partial<T>): Promise<T> {
       return client.post<T>(basePath, data);
     },
 
-    /**
-     * Update an existing record
-     */
     async update(id: string | number, data: Partial<T>): Promise<T> {
-      return client.put<T>(`${basePath}?id=${id}`, data);
+      return client.put<T>(basePath, data, { params: { id: id.toString() } });
     },
 
-    /**
-     * Delete a record
-     */
     async delete(id: string | number): Promise<void> {
-      await client.delete(`${basePath}?id=${id}`);
+      return client.delete(basePath, { params: { id: id.toString() } });
     },
 
-    /**
-     * Find multiple records with filtering
-     */
     async findMany(filter: FilterOptions): Promise<T[]> {
-      const params = transformFilterToParams(filter);
-      return client.get<T[]>(basePath, { params });
+      return client.get<T[]>(basePath, { params: transformFilterToParams(filter) });
     },
 
-    /**
-     * Count records with optional filtering
-     */
     async count(filter?: FilterOptions): Promise<number> {
-      const params = transformFilterToParams(filter);
-      params['count'] = 'true';
+      const params = { ...transformFilterToParams(filter), count: 'true' };
       const response = await client.get<{ count: number }>(`${basePath}/count`, { params });
       return response.count;
-    },
+    }
   };
 }

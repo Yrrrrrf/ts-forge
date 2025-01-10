@@ -52,7 +52,9 @@ export async function generateTypes(metadata: SchemaMetadata[]): Promise<void> {
 			}).join('\n\n');
 			// * Create the /gen dir & write the schema types...
 			await fs.mkdir('src/gen', { recursive: true });
-			await fs.writeFile(`src/gen/types-${schema}.ts`, types);
+			// Only change this line:
+			await fs.writeFile(`src/gen/types-${schema.name}.ts`, types);
+			// await fs.writeFile(`src/gen/types-${schema}.ts`, types);
 		}
 	}));
 

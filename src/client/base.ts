@@ -1,5 +1,4 @@
 // src/client/base.ts
-
   
   /**
    * Custom error class for TsForge operations
@@ -38,15 +37,27 @@
       backoff: number;
     };
   
+
     constructor(baseUrl: string, options?: Partial<BaseClient>) {
+      // Add protocol if not present
+      if (!baseUrl.startsWith('http://') && !baseUrl.startsWith('https://')) {
+        baseUrl = 'http://' + baseUrl;
+      }
+      // Ensure baseUrl ends with a slash
+      if (!baseUrl.endsWith('/')) {
+        baseUrl += '/';
+      }
       this.baseUrl = baseUrl;
     }
 
-    /**
+        /**
      * Builds the full URL including query parameters
      */
+
     private buildUrl(endpoint: string, params?: Record<string, string | number | boolean>): string {
-      const url = new URL(endpoint, this.baseUrl);
+      // Remove leading slash from endpoint if present
+      const cleanEndpoint = endpoint.startsWith('/') ? endpoint.slice(1) : endpoint;
+      const url = new URL(cleanEndpoint, this.baseUrl);
       
       if (params) {
         Object.entries(params).forEach(([key, value]) => {
@@ -151,11 +162,16 @@
      * HTTP POST request
      */
     async post<T>(endpoint: string, data?: unknown, options: BaseRequestOptions = {}): Promise<T> {
-      return this.request<T>(endpoint, {
+      const response = await this.request<T>(endpoint, {
         ...options,
         method: 'POST',
         body: data ? JSON.stringify(data) : undefined,
       });
+    
+      // Wait for a short time to ensure transaction is committed
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      return response;
     }
   
     /**

@@ -13,6 +13,9 @@ export { forge };
 import * as crud from './client/crud';
 export { crud };
 
+import * as logging from './tools/logging';
+export { logging };
+
 /**
  * Display application data
  */
