@@ -1,18 +1,20 @@
 {
   "name": "ts-forge",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Type API response handler",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Yrrrrrf/ts-forge.git"
   },
-  "module": "dist/index.js",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+      "default": "./dist/index.js"
     }
   },
   "scripts": {

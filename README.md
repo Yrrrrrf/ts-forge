@@ -17,7 +17,7 @@ This pkg is built with TypeScript in mind, offering full TypeScript support, run
 
 ## Considerations
 
-**The current 'API route' convention is followed by the one declared by the [CRUD-Forge](https://pypi.org/project/crud-forge/) python library (to manage API routes for [FastAPI](https://fastapi.tiangolo.com/) projects).**
+**The current 'API route' convention is followed by the one declared by the [API-Forge](https://pypi.org/project/api-forge/) python library (to manage API routes for [FastAPI](https://fastapi.tiangolo.com/) projects).**
 
 ## Key Features
 

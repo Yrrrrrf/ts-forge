@@ -43,9 +43,17 @@ export function createCrudOperations<T>(
    */
   function transformFilterToParams(filter: FilterOptions = {}): Record<string, string> {
     const params: Record<string, string> = {};
+  
+    // Flatten the 'where' object into individual parameters
     if (filter.where) {
-      params['where'] = JSON.stringify(filter.where);
+      Object.entries(filter.where).forEach(([key, value]) => {
+        // Ensure only valid values are added to the parameters.
+        if (value !== undefined && value !== null && value !== '') {
+            params[key] = String(value);
+        }
+      });
     }
+  
     if (filter.orderBy) {
       params['order_by'] = JSON.stringify(filter.orderBy);
     }

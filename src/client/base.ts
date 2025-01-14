@@ -53,7 +53,6 @@
         /**
      * Builds the full URL including query parameters
      */
-
     private buildUrl(endpoint: string, params?: Record<string, string | number | boolean>): string {
       // Remove leading slash from endpoint if present
       const cleanEndpoint = endpoint.startsWith('/') ? endpoint.slice(1) : endpoint;
@@ -61,7 +60,7 @@
       
       if (params) {
         Object.entries(params).forEach(([key, value]) => {
-          if (value !== undefined && value !== null) {
+          if (value !== undefined && value !== null && value !== '') {
             url.searchParams.append(key, String(value));
           }
         });

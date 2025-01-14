@@ -1,7 +1,8 @@
 // src/forge.ts
-import fs from 'fs/promises';
 import { cyan, dim, log } from './tools/logging';
 import { BaseClient } from './client/base';
+import { removeDir, ensureDir, writeFiles } from './tools/fs-ops';
+
 import { 
   generateTypes, 
   SchemaMetadata,
@@ -65,12 +66,15 @@ export class TsForge {
   }
 
   async genSchemaTypes(schemas: string[]): Promise<void> {
-    // Existing implementation...
-    await fs.rm('src/gen', { recursive: true, force: true });		
-    await fs.mkdir('src/gen', { recursive: true });
-    await generateTypes(this.schemaMetadata.filter(s => schemas.includes(s.name)));
-    log.info(dim('Generated types for schemas: ') + cyan(schemas.join(', ')));
-    log.info(dim('Generated index file for schemas: ') + cyan('src/gen/index.ts'));
-    await fs.writeFile('src/gen/metadata.json', JSON.stringify(this.schemaMetadata));
+      await removeDir('src/gen');
+      await ensureDir('src/gen');
+      await generateTypes(this.schemaMetadata.filter(s => schemas.includes(s.name)));
+      log.info(dim('Generated types for schemas: ') + cyan(schemas.join(', ')));
+      log.info(dim('Generated index file for schemas: ') + cyan('src/gen/index.ts'));
+      
+      await writeFiles([{
+          path: 'src/gen/metadata.json',
+          content: JSON.stringify(this.schemaMetadata)
+      }]);
   }
 }
