@@ -23,9 +23,9 @@ export type {
 } from './client/crud';
 
 // * Export types
-export { 
-	generateTypes
-} from './client/types';
+// export { 
+// 	generateTypes
+// } from './client/types';
 export type { 
 	ColumnMetadata, 
 	TableMetadata, 
