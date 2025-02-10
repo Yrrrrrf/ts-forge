@@ -1,10 +1,6 @@
-<h1 align="center">
-   <img src="./resources/img/knife-sheath.png" alt="TS Forge Icon" width="128" height="128" description="A Knife Sheath that represents how this pkg is a 'tool' for handling API responses and generating TS types"> 
-   <div align="center">TS Forge</div>
-</h1>
+# <div align="center"><img src="./resources/img/knife-sheath.png" alt="TS Forge Icon" width="128" height="128"><div align="center">TS Forge</div></div>
 
-
-[![npm pkg](https://badge.fury.io/js/ts-forge.svg)](https://badge.fury.io/js/ts-forge)
+[![npm pkg](https://badge.fury.io/js/ts-forge.svg)](https://www.npmjs.com/package/ts-forge)
 [![GitHub repo](https://img.shields.io/badge/GitHub-ts--forge-blue)](https://github.com/Yrrrrrf/ts-forge)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://choosealicense.com/licenses/mit/)
 
@@ -12,8 +8,7 @@
 
 TS FORGE is a TypeScript library designed to handle API response types efficiently. It provides a robust type system for managing API responses, reducing boilerplate code, and ensuring type safety throughout your application.
 
-This pkg is built with TypeScript in mind, offering full TypeScript support, runtime type validation, and error handling. It is lightweight, dependency-free.
-
+This pkg is built with TypeScript in mind, offering full TypeScript support, runtime type validation, and error handling. It is lightweight and dependency-free.
 
 ## Considerations
 
@@ -40,37 +35,117 @@ yarn add ts-forge  # using yarn
 # deno install --unstable --import-map=import_map.json --name=ts-forge https://deno.land/x/ts-forge/mod.ts  # using deno
 ```
 
-<!--
-todo: Add 'deno 2.0' support
-todo: Add 'deno 2.0' support
-todo: Add 'deno 2.0' support
--->
-
 ## Quick Start
 
-### Usage
-- TODO: Add some usage examples...
-<!-- 
-todo: Add some usage examples... 
-todo: Add some usage examples... 
-todo: Add some usage examples... 
--->
+```typescript
+import { BaseClient, TsForge } from 'ts-forge';
 
-<!-- 
-### API 
--->
+// Initialize and setup
+const baseClient = new BaseClient("localhost:8000/");
+const forge = new TsForge(baseClient);
 
-<!-- 
-## Contributing
+// Generate types
+forge.genTs();  // Generate TypeScript types
+forge.genMetadataJson();  // Generate metadata JSON
+```
 
-We welcome contributions! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
+## Usage Examples
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
--->
+### Basic CRUD Operations
+
+```typescript
+// Get table operations with type inference
+const profileOps = await forge.getTableOperations('account', 'profile');
+
+// Create
+const newProfile = await profileOps.create({
+    username: "newuser",
+    email: "user@example.com",
+    full_name: "Test User",
+    status: "active"
+});
+
+// Read
+const profile = await profileOps.findOne(newProfile.id);
+
+// Query with filters
+const activeProfiles = await profileOps.findMany({ 
+    where: { status: "active" },
+    orderBy: { username: "asc" }
+});
+
+// Update & Delete
+await profileOps.update(profile.id, { status: "inactive" });
+await profileOps.delete(profile.id);
+```
+
+### Testing CRUD Operations
+
+```typescript
+import { testForgeSetup, runTableTests } from 'ts-forge';
+
+async function runStudentTests() {
+    const forge = await testForgeSetup();
+
+    // Get active program
+    const programs = await (await forge.getTableOperations('academic', 'program'))
+        .findMany({ where: { is_active: true } });
+
+    if (!programs.length) throw new Error('No active programs found');
+
+    // Run student tests
+    const sampleStudent = {
+        first_name: `Test${Date.now()}`,
+        last_name: "Student",
+        enrollment_date: new Date().toISOString().split('T')[0],
+        program_id: programs[0].id,
+        is_active: true
+    };
+
+    await runTableTests(forge, 'student', 'student', sampleStudent);
+}
+```
+
+### Type Generation
+
+```typescript
+import { appDt, BaseClient, TsForge } from 'ts-forge';
+
+function main() {
+    appDt();  // Display application info
+    
+    const forge = new TsForge(new BaseClient("localhost:8000"));
+    
+    forge.genTs();  // Generate TypeScript types
+    forge.genMetadataJson();  // Generate metadata JSON
+}
+
+main();
+```
+
+## Available Operations
+
+### Table Operations
+- `create(data)`: Create a new record
+- `findOne(id)`: Find a single record by ID
+- `findMany(filter)`: Find records matching filter criteria
+- `update(id, data)`: Update a record
+- `delete(id)`: Delete a record
+
+### Filter Options
+```typescript
+interface FilterOptions {
+    where?: Record<string, any>;
+    orderBy?: Record<string, "asc" | "desc">;
+    limit?: number;
+    offset?: number;
+}
+```
+
+### Test Utilities
+- `testForgeSetup()`: Initialize and test forge connection
+- `runTableTests()`: Run CRUD tests for a table
+- `getTableOperations()`: Get typed CRUD operations for a table
 
 ## License
 

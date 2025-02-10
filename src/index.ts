@@ -6,7 +6,7 @@
 export { BaseClient } from "./client/base";
 
 // * Export main forge class
-export { TsForge } from "./forge";
+export { TsForge, BaseEntity } from "./forge";
 
 // * Export crud operations
 export { createCrudOperations } from "./client/crud";

@@ -14,6 +14,16 @@ import {
 	FunctionMetadataResponse,
 } from "./client/types";
 import { SchemaDisplay } from "./tools/schema-display";
+import { createCrudOperations } from "./client/crud";
+
+export interface BaseEntity {
+    id: string;
+    [key: string]: any;
+}
+// Helper type to infer the entity type from table metadata
+export type TableEntity<T> = T extends TableMetadata ? {
+    [K in keyof T['columns']]: T['columns'][K] extends { type: infer Type } ? Type : never;
+} & BaseEntity : never;
 
 // Type utilities for schema access
 type SchemaName<T> = T extends { name: infer N } ? N : never;
@@ -35,32 +45,44 @@ export class TsForge {
 	}
 
 	// * Initialization
-	private async initialize(): Promise<void> {
-		log.info("Initializing TsForge...");
-		this.schemaMetadata = await new MetadataClient(
-			this.baseClient,
-		).getSchemas();
 
-		log.info(
-			`Loaded schemas: ${dim(this.schemaMetadata.map((s) => s.name).join(", "))}`,
-		);
+    // * Initialization
+    private async initialize(): Promise<void> {
+        log.info("Initializing TsForge...");
+        let metadataClient = new MetadataClient(this.baseClient);
+        this.schemaMetadata = await metadataClient.getSchemas();
+        
+        log.info(
+            `Loaded schemas: ${dim(this.schemaMetadata.map((s) => s.name).join(", "))}`,
+        );
+    }
 
-		// const display = new SchemaDisplay(this.schemaMetadata);
-		// display.display();
-		// display.displayDiscoveries();
-	}
+    async displaySchema() {
+        await this.ensureInitialized();
+        new SchemaDisplay(this.schemaMetadata).display();
+    }
 
-	displaySchema(schemaName: SchemaName<SchemaMetadata>) {
-		new SchemaDisplay(this.schemaMetadata).display();
-	}
-
-	displayDiscoveries() {
-		new SchemaDisplay(this.schemaMetadata).displayDiscoveries();
-	}
+    async displayDiscoveries() {
+        await this.ensureInitialized();
+        new SchemaDisplay(this.schemaMetadata).displayDiscoveries();
+    }
 
 	private async ensureInitialized(): Promise<void> {
 		await this.initPromise;
 	}
+
+    // * Schema operators
+    async getTableOperations<T extends BaseEntity = any>(
+        schemaName: string,
+        tableName: string
+    ) {
+        const table = await this.getTable(schemaName, tableName);
+        if (!table) {
+            throw new Error(`Table ${schemaName}.${tableName} not found`);
+        }
+        return createCrudOperations<T>(this.baseClient, table);
+    }
+
 
 	// * Schema access
 
