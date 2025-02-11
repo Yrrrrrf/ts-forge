@@ -20,6 +20,10 @@ export type {
 	ColumnMetadata,
 	TableMetadata,
 	SchemaMetadata,
+	ViewMetadata,
+	SimpleEnumInfo,
+	FunctionMetadataResponse,
+	ColumnRef
 } from "./client/types";
 
 export { mapPgTypeToTs } from "./tools/type-maps";

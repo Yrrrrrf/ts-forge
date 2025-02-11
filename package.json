@@ -1,6 +1,6 @@
 {
   "name": "ts-forge",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Type API response handler",
   "repository": {
     "type": "git",

@@ -48,6 +48,7 @@ export interface ColumnMetadata {
 	name: string;
 	type: string;
 	nullable: boolean;
+	// improve it to be: isPK?: boolean;
 	isPrimaryKey: boolean;
 	isEnum: boolean;
 	references?: ColumnRef;

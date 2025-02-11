@@ -41,7 +41,7 @@ export class TsForge {
 
 	constructor(baseClient: BaseClient) {
 		this.baseClient = baseClient;
-		this.initPromise = this.initialize();
+		this.initPromise = this.initialize();	
 	}
 
 	// * Initialization
