@@ -8,11 +8,11 @@ This package has been deprecated in favor of <a href="https://github.com/Yrrrrrf
   <div align="center">TS Forge</div>
 </h1>
 
-<div align="center">
 
 [![npm pkg](https://badge.fury.io/js/ts-forge.svg)](https://www.npmjs.com/package/ts-forge)
 [![GitHub repo](https://img.shields.io/badge/GitHub-ts--forge-blue)](https://github.com/Yrrrrrf/ts-forge)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://choosealicense.com/licenses/mit/)
+[![Downloads](https://img.shields.io/npm/dt/ts-forge.svg)](https://www.npmjs.com/package/ts-forge)
 
 ## Overview
 
