@@ -1,5 +1,11 @@
 // * Import all the modules and export them
 
+// todo: Improve the importing
+// todo: Add new re-exports for:
+// todo: + ts-sql types equivalent
+// todo: + some enhanced v of init_forge() fn
+// todo: + some enhanced v of appDt() fn
+
 // src/index.ts
 
 // * Export main client
@@ -28,18 +34,34 @@ export type {
 
 export { mapPgTypeToTs } from "./tools/type-maps";
 
-import { log, cyan } from "./tools/logging";
+import { log, styles, colors, backgrounds } from "./tools/logging";
 export { log } from "./tools/logging";
 
-/**
- * Display application data
- */
 export function appDt(): void {
 	console.clear();
-	console.log(cyan("TS Forge"));
+	console.log(colors.cyan("TS Forge"));
 }
 
 export function init_forge(): string {
 	log.debug("init_forge function called.");
 	return "This fn is called from forge_init";
+}
+
+import { BaseClient } from "./client/base";
+import { TsForge } from "./forge";
+
+
+export async function localForge(port: number = 8000): Promise<TsForge> {
+    const baseClient = new BaseClient(`http://localhost:${port}`);
+    const forge = new TsForge(baseClient);
+	const health = await forge.checkHealth();
+	
+	log.info(`API Status: ${health.status}`);
+	log.info(`API Version: ${health.version}`);
+
+	forge.checkPing();
+	forge.display();
+	forge.displayDiscoveries();
+
+	return forge;
 }

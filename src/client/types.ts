@@ -1,6 +1,6 @@
 // src/schema/gen-types.ts
 import { ensureDir, removeDir, writeFiles } from "../tools/fs-ops";
-import { cyan, dim, log } from "../tools/logging";
+import { colors, log, styles } from "../tools/logging";
 import { mapPgTypeToTs } from "../tools/type-maps";
 
 // * STATUS TYPES
@@ -48,9 +48,8 @@ export interface ColumnMetadata {
 	name: string;
 	type: string;
 	nullable: boolean;
-	// improve it to be: isPK?: boolean;
-	isPrimaryKey: boolean;
-	isEnum: boolean;
+	is_pk?: boolean;
+	is_enum?: boolean;
 	references?: ColumnRef;
 }
 
@@ -257,7 +256,7 @@ export class TypeGenerator {
 						content: content,
 					},
 				]);
-				log.debug(dim("Gen types for: ") + cyan(schema.name));
+				log.debug(styles.dim("Gen types for: ") + colors.cyan(schema.name));
 			}
 
 			await writeFiles([
@@ -272,7 +271,7 @@ export class TypeGenerator {
 							.join("\n") + "\n",
 				},
 			]);
-			log.info(dim("Generated index file: ") + cyan("src/gen/index.ts"));
+			log.info(styles.dim("Generated index file: ") + colors.cyan("src/gen/index.ts"));
 		} catch (error) {
 			console.error("Error generating types:", error);
 			throw error;
@@ -287,18 +286,6 @@ export type SchemaView<S extends SchemaMetadata> = S["views"][keyof S["views"]];
 export type SchemaEnum<S extends SchemaMetadata> = S["enums"][keyof S["enums"]];
 export type SchemaFunction<S extends SchemaMetadata> =
 	S["functions"][keyof S["functions"]];
-
-// Helper types for type-safe schema access
-export type SchemaContent<S extends SchemaMetadata> = {
-	tables: Record<string, TableMetadata>;
-	views: Record<string, ViewMetadata>;
-	enums: Record<string, SimpleEnumInfo>;
-	functions: Record<string, FunctionMetadataResponse>;
-	procedures: Record<string, FunctionMetadataResponse>;
-	triggers: Record<string, FunctionMetadataResponse>;
-};
-
-export type SchemaKeys = keyof SchemaContent<SchemaMetadata>;
 
 // Type guard functions
 export const isTable = (content: any): content is TableMetadata => {

@@ -1,55 +1,53 @@
 /**
  * Utility for color formatting
  */
-export const color = (color: string, str: string): string =>
+const color = (color: string, str: string): string =>
 	`\x1b[${color}m${str}\x1b[0m`;
 
-// // ANSI color codes
-// const colors = {
-//     reset: (s: string) => `\x1b[0m${s}\x1b[0m`,
-//     bright: (s: string) => `\x1b[1m${s}\x1b[0m`,
-//     dim: (s: string) => `\x1b[2m${s}\x1b[0m`,
-//     // Base colors
-//     green: (s: string) => `\x1b[32m${s}\x1b[0m`,
-//     blue: (s: string) => `\x1b[34m${s}\x1b[0m`,
-//     magenta: (s: string) => `\x1b[35m${s}\x1b[0m`,
-//     cyan: (s: string) => `\x1b[36m${s}\x1b[0m`,
-//     gray: (s: string) => `\x1b[90m${s}\x1b[0m`,
-//     yellow: (s: string) => `\x1b[33m${s}\x1b[0m`,
-//     // Bright variants
-//     brightWhite: (s: string) => `\x1b[1;97m${s}\x1b[0m`,
-//     brightBlue: (s: string) => `\x1b[1;94m${s}\x1b[0m`,
-//     brightMagenta: (s: string) => `\x1b[1;95m${s}\x1b[0m`
-// };
+export const styles = {
+	reset: "\x1b[0m",
+	bold: (s: string) => color("1", s),
+	dim: (s: string) => color("2", s),
+	italic: (s: string) => color("3", s),
+	underline: (s: string) => color("4", s),
+	// blink: (s: string) => color("5", s),
+	// reverse: (s: string) => color("7", s),
+	// hidden: (s: string) => color("8", s),
+	strike: (s: string) => color("9", s),
+};
 
-// * fg colors
-export const red = (str: string): string => color("31", str);
-export const green = (str: string): string => color("32", str);
-export const yellow = (str: string): string => color("33", str);
-export const blue = (str: string): string => color("34", str);
-export const magenta = (str: string): string => color("35", str);
-export const cyan = (str: string): string => color("36", str);
-export const gray = (str: string): string => color("90", str);
+export const colors = {
+	// Normal colors
+	black: (s: string) => color("30", s),
+	red: (s: string) => color("31", s),
+	green: (s: string) => color("32", s),
+	yellow: (s: string) => color("33", s),
+	blue: (s: string) => color("34", s),
+	magenta: (s: string) => color("35", s),
+	cyan: (s: string) => color("36", s),
+	gray: (s: string) => color("90", s),
 
-// * bg colors
-export const bgRed = (str: string): string => color("41", str);
-export const bgGreen = (str: string): string => color("42", str);
-export const bgYellow = (str: string): string => color("43", str);
-export const bgBlue = (str: string): string => color("44", str);
-export const bgMagenta = (str: string): string => color("45", str);
-export const bgCyan = (str: string): string => color("46", str);
-export const bgGray = (str: string): string => color("100", str);
+    // Bright variants
+	brightBlack: (s: string) => color("1;90", s),
+	brightRed: (s: string) => color("1;91", s),
+	brightGreen: (s: string) => color("1;92", s),
+	brightYellow: (s: string) => color("1;93", s),
+	brightBlue: (s: string) => color("1;94", s),
+	brightMagenta: (s: string) => color("1;95", s),
+	brightCyan: (s: string) => color("1;96", s),
+	brightWhite: (s: string) => color("1;97", s),
+};
 
-/**
- * Utility for text styling
- */
-export const style = (style: string, str: string): string =>
-	`\x1b[${style}m${str}\x1b[0m`;
-export const bold = (str: string): string => style("1", str);
-export const dim = (str: string): string => style("2", str);
-export const italic = (str: string): string => style("3", str);
-export const underline = (str: string): string => style("4", str);
-export const strike = (str: string): string => style("9", str);
+export const backgrounds = {
+	black: (s: string) => color("40", s),
+	red: (s: string) => color("41", s),
+	green: (s: string) => color("42", s),
+	yellow: (s: string) => color("43", s),
+	blue: (s: string) => color("44", s),
+	magenta: (s: string) => color("45", s),
+	cyan: (s: string) => color("46", s),
+	gray: (s: string) => color("100", s),
+};
 
 /**
  * Helper to calculate the visible length of strings with ANSI escape codes
@@ -97,34 +95,34 @@ export class Logger {
 	): string {
 		// const timestamp = `${gray(new Date().toISOString())}`;
 		// now just the date not the other stuff
-		const timestamp = `${gray(new Date().toISOString().slice(0, 19))}`;
+		const timestamp = `${colors.gray(new Date().toISOString().slice(0, 19))}`;
 		const indent = "  ".repeat(this.indentLevel);
-		return `${timestamp} ${colorFn(`[${level}]`)} ${cyan(`[${this.moduleName}]`)} ${indent}${message}`;
+		return `${timestamp} ${colorFn(`[${level}]`)} ${colors.cyan(`[${this.moduleName}]`)} ${indent}${message}`;
 	}
 
 	debug(message: string): void {
-		console.log(this.formatMessage("DEBUG", magenta, message));
+		console.log(this.formatMessage("DEBUG", colors.magenta, message));
 	}
 
 	info(message: string): void {
-		console.log(this.formatMessage("INFO", blue, message));
+		console.log(this.formatMessage("INFO", colors.blue, message));
 	}
 
 	success(message: string): void {
-		console.log(this.formatMessage("SUCCESS", green, message));
+		console.log(this.formatMessage("SUCCESS", colors.green, message));
 	}
 
 	warn(message: string): void {
-		console.log(this.formatMessage("WARN", yellow, message));
+		console.log(this.formatMessage("WARN", colors.yellow, message));
 	}
 
 	error(message: string): void {
-		console.log(this.formatMessage("ERROR", red, message));
+		console.log(this.formatMessage("ERROR", colors.red, message));
 	}
 
 	critical(message: string): void {
 		console.log(
-			this.formatMessage("CRITICAL", (str) => red(bold(str)), message),
+			this.formatMessage("CRITICAL", (str) => colors.red(styles.bold(str)), message),
 		);
 	}
 
@@ -159,7 +157,7 @@ export class Logger {
 	 */
 	section(title: string): void {
 		console.log(
-			`\n${bold("=").repeat(50)}\n${bold(title)}\n${bold("=").repeat(50)}`,
+			`\n${styles.bold("=").repeat(50)}\n${styles.bold(title)}\n${styles.bold("=").repeat(50)}`,
 		);
 	}
 }

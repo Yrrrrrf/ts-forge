@@ -1,6 +1,6 @@
 {
   "name": "ts-forge",
-  "version": "0.0.7",
+  "version": "0.1.0",
   "description": "Type API response handler",
   "repository": {
     "type": "git",
@@ -29,6 +29,10 @@
     "dist/**/*"
   ],
   "keywords": [
+    "forge",
+    "type generator",
+    "api-forge",
+    "ts-forge",
     "api",
     "response",
     "handler"

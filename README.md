@@ -1,4 +1,14 @@
-# <div align="center"><img src="./resources/img/knife-sheath.png" alt="TS Forge Icon" width="128" height="128"><div align="center">TS Forge</div></div>
+<h2 align="center">⚠️ DEPRECATION NOTICE ⚠️</h2>
+
+<p align="center">
+This package has been deprecated in favor of <a href="https://github.com/Yrrrrrf/prism-ts">prism-ts</a>, which provides improved functionality, better architecture, and continued maintenance.
+</p>
+
+<h1 align="center">
+  <div align="center">TS Forge</div>
+</h1>
+
+<div align="center">
 
 [![npm pkg](https://badge.fury.io/js/ts-forge.svg)](https://www.npmjs.com/package/ts-forge)
 [![GitHub repo](https://img.shields.io/badge/GitHub-ts--forge-blue)](https://github.com/Yrrrrrf/ts-forge)
@@ -10,9 +20,8 @@ TS FORGE is a TypeScript library designed to handle API response types efficient
 
 This pkg is built with TypeScript in mind, offering full TypeScript support, runtime type validation, and error handling. It is lightweight and dependency-free.
 
-## Considerations
+> **Note**: This package is designed to work with the [API-Forge](https://pypi.org/project/api-forge/) python library, which generates API routes for [FastAPI](https://fastapi.tiangolo.com/) projects.
 
-**The current 'API route' convention is followed by the one declared by the [API-Forge](https://pypi.org/project/api-forge/) python library (to manage API routes for [FastAPI](https://fastapi.tiangolo.com/) projects).**
 
 ## Key Features
 
